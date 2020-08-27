@@ -1,0 +1,9 @@
+.gitconfig
+.local
+.ssh
+.theia
+.webdav
+.yarn
+*.swp
+terminal-server.js*
+node_modules
