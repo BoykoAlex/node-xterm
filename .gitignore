@@ -5,5 +5,5 @@
 .webdav
 .yarn
 *.swp
-terminal-server.js*
+terminal-*.js*
 node_modules

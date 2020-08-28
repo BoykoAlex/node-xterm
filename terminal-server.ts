@@ -306,16 +306,8 @@ app.set('view engine', 'pug');
 
 app.use('/xterm.css', express.static(path.join(__dirname,
     './node_modules/xterm/css/xterm.css')));
-app.use('/xterm.js', express.static(path.join(__dirname,
-    './node_modules/xterm/lib/xterm.js')));
-app.use('/xterm-addon-fit.js', express.static(path.join(__dirname,
-    './node_modules/xterm-addon-fit/lib/xterm-addon-fit.js')));
-app.use('/ResizeSensor.js', express.static(path.join(__dirname,
-    './node_modules/css-element-queries/src/ResizeSensor.js')));
-app.use('/lodash.js', express.static(path.join(__dirname,
-    './node_modules/lodash/lodash.js')));
 
-app.use('/terminal-client.js', express.static(path.join(__dirname, './terminal-client.js')));
+app.use('/terminal-client-bundled.js', express.static(path.join(__dirname, './terminal-client-bundled.js')));
 
 app.get('/', (req, res) => {
    res.send("Xterm is UP");

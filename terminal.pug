@@ -5,11 +5,7 @@ doctype html
 html
   head
     link(rel="stylesheet" href="/xterm.css")
-    script(src="/xterm.js")
-    script(src="/xterm-addon-fit.js")
-    script(src="/ResizeSensor.js")
-    script(src="/lodash.js")
-    script(src="/terminal-client.js")
+    script(src="/terminal-client-bundled.js")
 
     script.
 
@@ -17,7 +13,7 @@ html
 
       document.addEventListener('DOMContentLoaded', function() {
 
-            document.getElementById('terminal').style.backgroundColor = options.theme.background ? options.theme.background : 'rgb(0,0,0,)';
+            document.getElementById('terminal').style.backgroundColor = options.theme.background ? options.theme.background : 'rgb(0,0,0)';
 
             startTerminal(
             		'terminal',
