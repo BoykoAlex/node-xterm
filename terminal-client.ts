@@ -26,7 +26,7 @@ function ping(ws: WebSocket) {
     }
 }
 
-function startTerminal(elementId: string, id: string, wsUrl: string, cmd: string[], cwd: string, theme: any) {
+function startTerminal(elementId: string, id: string, wsUrl: string, cmd: string[] | undefined, cwd: string | undefined, theme: any) {
 
     const options: ITerminalOptions = {
         cursorBlink: false,
@@ -52,6 +52,8 @@ function startTerminal(elementId: string, id: string, wsUrl: string, cmd: string
     if (!terminalParent) {
         throw new Error('Element for embedding terminal cannot be determined');
     }
+
+    terminalParent.style.backgroundColor = theme.background ? theme.background : 'rgb(0,0,0)';
 
     terminal.open(terminalParent);
 
@@ -125,4 +127,45 @@ function startTerminal(elementId: string, id: string, wsUrl: string, cmd: string
 
 }
 
-(<any>window).startTerminal = startTerminal;
+function produceOptions() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const cmdParam = urlParams.get('cmd')
+    const cmd = cmdParam ? cmdParam.split(/\s+/) : undefined;
+    const cwd = urlParams.get('cwd') || undefined;
+    const id = window.location.pathname.substr('/terminal/'.length);
+
+    const theme: any = {
+        background: urlParams.get('bg') || undefined,
+        foreground: urlParams.get('fg') || undefined,
+        cursor: urlParams.get('cursor') || undefined,
+        cursorAccent: urlParams.get('cursorAccent') || undefined,
+        selection: urlParams.get('selection') || undefined,
+        fontFamily: urlParams.get('fontFamily') || undefined,
+    };
+
+    const fontSizeParam = urlParams.get('fontSize');
+    if (fontSizeParam) {
+        theme.fontSize = parseInt(fontSizeParam);
+    }
+
+    return {
+        id,
+        cmd,
+        cwd,
+        theme
+    };
+}
+
+function launchTerminal(elementId: string) {
+    const options = produceOptions();
+    startTerminal(
+        elementId,
+        options.id,
+        `${window.location.protocol.replace('http', 'ws')}//${window.location.host}/websocket`,
+        options.cmd,
+        options.cwd,
+        options.theme
+    );
+}
+
+(<any>window).launchTerminal = launchTerminal;

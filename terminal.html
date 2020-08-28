@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/xterm.css">
+        <script src="/terminal-client-bundled.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                launchTerminal('terminal');
+            });
+        </script>
+        <style>
+
+            html, body {
+                height: 100%;
+                margin: 0;
+                overflow: hidden;
+            }
+
+            #terminal {
+                height: 100%;
+                width: 100%;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id="terminal"></div>
+    </body>
+</html>

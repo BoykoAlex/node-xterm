@@ -7,3 +7,5 @@
 *.swp
 terminal-*.js*
 node_modules
+dist
+xterm.css

@@ -301,11 +301,7 @@ if (shutdownProperties.on) {
     }, period);
 }
 
-app.set('views', path.join(__dirname, '.'));
-app.set('view engine', 'pug');
-
-app.use('/xterm.css', express.static(path.join(__dirname,
-    './node_modules/xterm/css/xterm.css')));
+app.use('/xterm.css', express.static(path.join(__dirname, './xterm.css')));
 
 app.use('/terminal-client-bundled.js', express.static(path.join(__dirname, './terminal-client-bundled.js')));
 
@@ -339,8 +335,9 @@ app.get('/terminal/:id', (req, res) => {
         options.theme.fontSize = parseInt(<string>req.query.fontSize);
     }
 
-    res.render('terminal', {
-        options: JSON.stringify(options)
-    });
+    res.sendFile(path.join(__dirname, 'terminal.html'));
+    // res.render('terminal', {
+    //     options: JSON.stringify(options)
+    // });
 });
 

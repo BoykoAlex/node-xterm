@@ -6,16 +6,18 @@
   "bin": "terminal-server.js",
   "scripts": {
     "start": "node ./terminal-server.js",
-    "clean": "rimraf terminal-*.js*",
+    "clean": "rimraf terminal-*.js* && rimraf dist && rimraf xterm.css",
     "server-build": "tsc",
-    "build": "npm run clean && npm run server-build && npm run client-build",
+    "build": "npm run clean && npm run server-build && npm run client-build && npm run dist-copy",
     "client-build": "webpack --progress --config ./webpack.config.js",
-    "install": "npm run build"
+    "dist-copy": "cpx package.json ./dist && cpx ./node_modules/xterm/css/xterm.css ./dist && cpx terminal.pug ./dist && cpx terminal.html ./dist",
+    "dev-client-build": "webpack --progress --config ./dev-webpack.config.js",
+    "dev-server-build": "tsc --project dev-tsconfig.json",
+    "dev-build": "npm run clean && cpx ./node_modules/xterm/css/xterm.css ./ && npm run dev-server-build && npm run dev-client-build"
   },
   "dependencies": {
     "express": "^4.17.1",
     "node-pty": "^0.9.0",
-    "pug": "^3.0.0",
     "ws": "^7.3.0"
   },
   "devDependencies": {
@@ -23,6 +25,7 @@
     "@types/lodash": "^4.14.160",
     "@types/ws": "^7.2.4",
     "babel-minify-webpack-plugin": "^0.3.1",
+    "cpx": "^1.5.0",
     "css-element-queries": "^1.2.3",
     "lodash": "^4.17.20",
     "rimraf": "^3.0.2",
