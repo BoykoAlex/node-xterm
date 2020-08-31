@@ -4,7 +4,36 @@
         <script src="/terminal-client-bundled.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                launchTerminal('terminal');
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const cmdParam = urlParams.get('cmd')
+                const cmd = cmdParam ? cmdParam.split(/\s+/) : undefined;
+                const cwd = urlParams.get('cwd') || undefined;
+                const id = window.location.pathname.substr('/terminal/'.length);
+
+                const theme = {
+                    background: urlParams.get('bg') || undefined,
+                    foreground: urlParams.get('fg') || undefined,
+                    cursor: urlParams.get('cursor') || undefined,
+                    cursorAccent: urlParams.get('cursorAccent') || undefined,
+                    selection: urlParams.get('selection') || undefined,
+                    fontFamily: urlParams.get('fontFamily') || undefined,
+                };
+
+                const fontSizeParam = urlParams.get('fontSize');
+                if (fontSizeParam) {
+                    theme.fontSize = parseInt(fontSizeParam);
+                }
+
+                startTerminal(
+                    'terminal',
+                    id,
+                    `${window.location.protocol.replace('http', 'ws')}//${window.location.host}/websocket`,
+                    cmd,
+                    cwd,
+                    theme
+                );
+
             });
         </script>
         <style>

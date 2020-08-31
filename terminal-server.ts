@@ -134,9 +134,9 @@ class PtyProcessManager {
     create(id: string, cmd: string[], cwd: string): PtyProcessInfo {
         let processInfo = this.processes.get(id);
         if (!cmd || !cmd.length) {
-            throw new Error('Shell command is empty!');
+            cmd = [ (process.platform.startsWith('win') ? 'cmd.exe' : 'bash') ];
         }
-        const shell = cmd.shift() || 'bash' ;
+        const shell = cmd.shift() || (process.platform.startsWith('win') ? 'cmd.exe' : 'bash') ;
         if (!processInfo) {
             const ptyProcess = pty.spawn(shell, cmd, {
                 name: 'xterm-color',
@@ -315,29 +315,6 @@ app.post('/shutdown', (req, res) => {
 });
 
 app.get('/terminal/:id', (req, res) => {
-
-    const options: any = {
-        id: req.params.id,
-        cmd: (<string>req.query.cmd || (process.platform.startsWith('win') ? 'cmd.exe' : 'bash')).split(/\s+/),
-        cwd: req.query.cwd,
-        theme: {
-            background: req.query.bg,
-            foreground: req.query.fg,
-            selection: req.query.selection,
-            cursor: req.query.cursor,
-            cursorAccent: req.query.cursorAccent,
-            fontFamily: req.query.fontFamily,
-        }
-    };
-
-
-    if (req.query.fontSize) {
-        options.theme.fontSize = parseInt(<string>req.query.fontSize);
-    }
-
     res.sendFile(path.join(__dirname, 'terminal.html'));
-    // res.render('terminal', {
-    //     options: JSON.stringify(options)
-    // });
 });
 

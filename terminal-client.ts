@@ -1,9 +1,13 @@
-import {ITerminalOptions, Terminal} from 'xterm';
+import { ITerminalOptions, ITheme, Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import * as FITADDON from 'xterm-addon-fit';
 import { ResizeSensor } from 'css-element-queries';
 import * as _ from 'lodash';
 
+export interface Theme extends ITheme {
+    fontFamily: string;
+    fontSize: number;
+}
 
 function resizeTerminal(terminal: Terminal, fitAddon: FitAddon, ws: WebSocket, id: string) {
     if (terminal.element && terminal.element.clientWidth > 0 && terminal.element.clientHeight > 0) {
@@ -26,7 +30,7 @@ function ping(ws: WebSocket) {
     }
 }
 
-function startTerminal(elementId: string, id: string, wsUrl: string, cmd: string[] | undefined, cwd: string | undefined, theme: any) {
+function startTerminal(elementId: string, id: string, wsUrl: string, cmd: string[] | undefined, cwd: string | undefined, theme: Theme) {
 
     const options: ITerminalOptions = {
         cursorBlink: false,
@@ -127,45 +131,4 @@ function startTerminal(elementId: string, id: string, wsUrl: string, cmd: string
 
 }
 
-function produceOptions() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const cmdParam = urlParams.get('cmd')
-    const cmd = cmdParam ? cmdParam.split(/\s+/) : undefined;
-    const cwd = urlParams.get('cwd') || undefined;
-    const id = window.location.pathname.substr('/terminal/'.length);
-
-    const theme: any = {
-        background: urlParams.get('bg') || undefined,
-        foreground: urlParams.get('fg') || undefined,
-        cursor: urlParams.get('cursor') || undefined,
-        cursorAccent: urlParams.get('cursorAccent') || undefined,
-        selection: urlParams.get('selection') || undefined,
-        fontFamily: urlParams.get('fontFamily') || undefined,
-    };
-
-    const fontSizeParam = urlParams.get('fontSize');
-    if (fontSizeParam) {
-        theme.fontSize = parseInt(fontSizeParam);
-    }
-
-    return {
-        id,
-        cmd,
-        cwd,
-        theme
-    };
-}
-
-function launchTerminal(elementId: string) {
-    const options = produceOptions();
-    startTerminal(
-        elementId,
-        options.id,
-        `${window.location.protocol.replace('http', 'ws')}//${window.location.host}/websocket`,
-        options.cmd,
-        options.cwd,
-        options.theme
-    );
-}
-
-(<any>window).launchTerminal = launchTerminal;
+(<any>window).startTerminal = startTerminal;
