@@ -96,12 +96,16 @@ function startTerminal(elementId: string, id: string, wsUrl: string, cmd: string
 
     let previousData = '';
     const is_eclipse_old_win_browser = typeof window.navigator.userAgent === 'string'
-        && window.navigator.userAgent.indexOf("Windows NT 6.2") >= 0;
+        && window.navigator.userAgent.indexOf("Windows NT") >= 0 
+        && window.navigator.userAgent.indexOf('Chrome') < 0 
+        && window.navigator.userAgent.indexOf('Edg') < 0
+        && window.navigator.userAgent.indexOf('WebKit') < 0;
     const is_eclipse_old_mac_browser = typeof window.navigator.userAgent === 'string'
         && window.navigator.userAgent.indexOf("Safari/522.0") >= 0
     terminal.onData(function(data) {
         if (is_eclipse_old_win_browser || is_eclipse_old_mac_browser) {
-            if (data.length === 1 && data === previousData) {
+            if (data.length === 1 && data === previousData 
+                && (data.charCodeAt(0) > 31 && (data.charCodeAt(0) < 127 || data.charCodeAt(0) > 159))) {
                 // Workaround double input on eclipse browser on mac
                 // skip - don't send the message. Let the next message however
                 previousData = '';

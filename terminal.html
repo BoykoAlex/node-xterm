@@ -1,26 +1,35 @@
 <html>
     <head>
         <link rel="stylesheet" href="/xterm.css">
-        <script src="/terminal-client-bundled.js"></script>
+        <script type="text/javascript" src="/terminal-client-bundled.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
 
-                const urlParams = new URLSearchParams(window.location.search);
-                const cmdParam = urlParams.get('cmd')
+                // Do NOT use URLSearchParams due to Eclipse browser on Win which is very old
+                const urlParams = {};
+                const searchParams =  window.location.search ?  window.location.search.substring(1) : '';
+                searchParams.split('&').map(function(tuple) {
+                    const idx = tuple.indexOf('=');
+                    if (idx > 0) {
+                        urlParams[tuple.substring(0, idx)] = decodeURIComponent(tuple.substring(idx + 1));
+                    }
+                });
+
+                const cmdParam = urlParams['cmd']
                 const cmd = cmdParam ? cmdParam.split(/\s+/) : undefined;
-                const cwd = urlParams.get('cwd') || undefined;
+                const cwd = urlParams['cwd'] || undefined;
                 const id = window.location.pathname.substr('/terminal/'.length);
 
                 const theme = {
-                    background: urlParams.get('bg') || undefined,
-                    foreground: urlParams.get('fg') || undefined,
-                    cursor: urlParams.get('cursor') || undefined,
-                    cursorAccent: urlParams.get('cursorAccent') || undefined,
-                    selection: urlParams.get('selection') || undefined,
-                    fontFamily: urlParams.get('fontFamily') || undefined,
+                    background: urlParams['bg'] || undefined,
+                    foreground: urlParams['fg'] || undefined,
+                    cursor: urlParams['cursor'] || undefined,
+                    cursorAccent: urlParams['cursorAccent'] || undefined,
+                    selection: urlParams['selection'] || undefined,
+                    fontFamily: urlParams['fontFamily'] || undefined,
                 };
 
-                const fontSizeParam = urlParams.get('fontSize');
+                const fontSizeParam = urlParams['fontSize'];
                 if (fontSizeParam) {
                     theme.fontSize = parseInt(fontSizeParam);
                 }
@@ -28,7 +37,7 @@
                 startTerminal(
                     'terminal',
                     id,
-                    `${window.location.protocol.replace('http', 'ws')}//${window.location.host}/websocket`,
+                    window.location.protocol.replace('http', 'ws') + '//' + window.location.host + '/websocket',
                     cmd,
                     cwd,
                     theme
