@@ -11,12 +11,11 @@
                 searchParams.split('&').map(function(tuple) {
                     const idx = tuple.indexOf('=');
                     if (idx > 0) {
-                        urlParams[tuple.substring(0, idx)] = decodeURIComponent(tuple.substring(idx + 1));
+                        urlParams[tuple.substring(0, idx)] = decodeURIComponent(tuple.substring(idx + 1).replace(/\+/g, ' '));
                     }
                 });
 
-                const cmdParam = urlParams['cmd']
-                const cmd = cmdParam ? cmdParam.split(/\s+/) : undefined;
+                const cmd = urlParams['cmd'] || undefined;
                 const cwd = urlParams['cwd'] || undefined;
                 const id = window.location.pathname.substr('/terminal/'.length);
 

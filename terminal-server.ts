@@ -3,6 +3,7 @@ import * as WebSocket from 'ws';
 import * as path from 'path';
 import * as pty from 'node-pty';
 import {IPty} from "node-pty";
+import { parseArgsStringToArgv } from 'string-argv';
 
 const INVALID_TIMER = -1;
 const MAX_PAGE = 3;
@@ -36,7 +37,7 @@ interface Message {
     type: 'ping' | 'size' | 'data' | 'init';
     id: string;
     data: string;
-    cmd: string[];
+    cmd: string;
     cwd: string;
     size: Size;
 }
@@ -131,14 +132,19 @@ class PtyProcessManager {
         this.processes.forEach(processInfo => this.terminatePty(processInfo));
     }
 
-    create(id: string, cmd: string[], cwd: string): PtyProcessInfo {
+    create(id: string, cmd: string, cwd: string): PtyProcessInfo {
         let processInfo = this.processes.get(id);
-        if (!cmd || !cmd.length) {
-            cmd = [ (process.platform.startsWith('win') ? 'cmd.exe' : 'bash') ];
+
+        let cmdList = parseArgsStringToArgv(cmd);
+
+        if (!cmdList || !cmdList.length) {
+            cmdList = [ (process.platform.startsWith('win') ? 'cmd.exe' : 'bash') ];
         }
-        const shell = cmd.shift() || (process.platform.startsWith('win') ? 'cmd.exe' : 'bash') ;
+        const shell = cmdList.shift() || (process.platform.startsWith('win') ? 'cmd.exe' : 'bash') ;
+        console.log("Shell: '" + shell + "'");
+        console.log("Cmd: " + JSON.stringify(cmdList));
         if (!processInfo) {
-            const ptyProcess = pty.spawn(shell, cmd, {
+            const ptyProcess = pty.spawn(shell, cmdList, {
                 name: 'xterm-color',
                 cols: 120,
                 rows: 30,
@@ -154,7 +160,7 @@ class PtyProcessManager {
         return processInfo;
     }
 
-    public createOrConnect(ws: WebSocket, id: string, cmd: string[], cwd: string): PtyProcessInfo {
+    public createOrConnect(ws: WebSocket, id: string, cmd: string, cwd: string): PtyProcessInfo {
         let processInfo = <PtyProcessInfo> this.processes.get(id);
         if (!processInfo) {
             processInfo = this.create(id, cmd, cwd);
