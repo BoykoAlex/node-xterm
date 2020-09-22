@@ -135,7 +135,7 @@ class PtyProcessManager {
     create(id: string, cmd: string, cwd: string): PtyProcessInfo {
         let processInfo = this.processes.get(id);
 
-        let cmdList = parseArgsStringToArgv(cmd);
+        let cmdList = cmd && cmd.length ? parseArgsStringToArgv(cmd) : [];
 
         if (!cmdList || !cmdList.length) {
             cmdList = [ (process.platform.startsWith('win') ? 'cmd.exe' : 'bash') ];
