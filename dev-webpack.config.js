@@ -29,11 +29,10 @@ module.exports = {
             }
         ]
     },
-    node : { fs: 'empty', net: 'empty' },
     plugins: [
-        new webpack.WatchIgnorePlugin([
+        new webpack.WatchIgnorePlugin({ paths: [
             /\.js$/,
             /\.d\.ts$/
-        ])
+        ]})
     ]
 };

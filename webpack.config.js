@@ -1,6 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
-const MinifyPlugin = require("babel-minify-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
     entry: [
@@ -29,12 +29,10 @@ module.exports = {
             }
         ]
     },
-    node : { fs: 'empty', net: 'empty' },
-    plugins: [
-        new MinifyPlugin({}, {}),
-        new webpack.WatchIgnorePlugin([
-            /\.js$/,
-            /\.d\.ts$/
-        ])
-    ]
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin({
+            test: [/\.js$/, /\.d\.ts$/],
+        })],
+    },
 };

@@ -171,6 +171,7 @@ class PtyProcessManager {
     }
 
     public disconnectSocket(ws: WebSocket) {
+        console.log('Socket disconnected handler');
         this.processes.forEach(ptyProcessInfo => {
             const index = ptyProcessInfo.sockets.indexOf(ws);
             if (index >= 0) {
@@ -180,6 +181,7 @@ class PtyProcessManager {
                         this.terminatePty(ptyProcessInfo);
                         break;
                     case 'DELAY':
+                        console.log('Setting timer to kill pty after delay of ' + (this.options.shutdownDelay * 1000));
                         (<any>ptyProcessInfo).terminationTimer = setTimeout(() => this.terminatePty(ptyProcessInfo), this.options.shutdownDelay * 1000);
                         break;
                 }
@@ -275,10 +277,12 @@ wss.on('connection', (ws: WebSocket) => {
     });
 
     ws.on('close', () => {
+        console.log('Socket closed');
         ptyProcessManager.disconnectSocket(ws);
     });
 
     ws.on('error', () => {
+        console.log('Socket error');
         ptyProcessManager.disconnectSocket(ws);
     });
 
