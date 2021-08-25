@@ -1,6 +1,6 @@
 {
   "name": "node-xterm",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "license": "EPL-2.0",
   "main": "terminal-server.js",
@@ -39,6 +39,6 @@
     "xterm-addon-fit": "^0.5.0"
   },
   "pkg": {
-    "assets": "./terminal.pug"
+    "assets": "../node_modules/node-pty/build/Release/pty.node"
   }
 }
